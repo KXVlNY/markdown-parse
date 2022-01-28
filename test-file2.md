@@ -1,4 +1,3 @@
 # Title
 
-[a link!](https://anyth(ing).com)
-[another link!](any-(page).html])
+[link 3](https://som(eth)ing.com)
