@@ -11,7 +11,7 @@ public class MarkdownParseTest {
     public void addition() {
         assertEquals(2, 1 + 1); // Test addition methods and make sure it returns 2
     }
-    public void getLinks() {
+    public void getLinks() throws IOException{
         Path fileName = Path.of("test-file.md");
 	    String contents = Files.readString(fileName);
         ArrayList<String> links = MarkdownParse.getLinks(contents);
