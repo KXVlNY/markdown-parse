@@ -7,15 +7,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MarkdownParseTest {
+    
     @Test
     public void addition() {
-        assertEquals(2, 1 + 1); // Test addition methods and make sure it returns 2
+        assertEquals(2, 1 + 1);
     }
-    public void getLinks() throws IOException{
+
+    @Test
+    public void getLink1() throws IOException{
         Path fileName = Path.of("test-file.md");
 	    String contents = Files.readString(fileName);
-        ArrayList<String> links = MarkdownParse.getLinks(contents);
-        List<String> linkList = List.of("https://something.com", "some-page.html");
-        assertEquals(linkList, links);
+        List<String> links = MarkdownParse.getLinks(contents);
+        List<String> newLink = List.of("https://something.com", 
+        "some-page.html");
+        assertEquals(links, newLink);
+    }
+
+    @Test
+    public void getLink2() throws IOException{
+        Path fileName = Path.of("test-file2.md");
+	    String contents = Files.readString(fileName);
+        List<String> links = MarkdownParse.getLinks(contents);
+        assertEquals(null, links);
+    }
+
+    @Test
+    public void getLink3() throws IOException{
+        Path fileName = Path.of("test-file3.md");
+	    String contents = Files.readString(fileName);
+        List<String> links = MarkdownParse.getLinks(contents);
+        assertEquals(null, links);
+    }
+
+    @Test
+    public void getLink5() throws IOException{
+        Path fileName = Path.of("test-file5.md");
+	    String contents = Files.readString(fileName);
+        List<String> links = MarkdownParse.getLinks(contents);
+        assertEquals(null, links);
     }
 }
