@@ -11,23 +11,37 @@ public class MarkdownParse {
         // the next )
         int currentIndex = 0;
         while(currentIndex < markdown.length()) {
-            int nextOpenBracket = markdown.indexOf("[", currentIndex);
-            System.out.format("%d\t%d\t%s\n", currentIndex, nextOpenBracket, toReturn);
-            int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
-            int openParen = markdown.indexOf("(", nextCloseBracket);
-            int closeParen = markdown.indexOf(")", openParen);
-            if(nextOpenBracket == -1 || nextCloseBracket == -1
-                  || closeParen == -1 || openParen == -1) {
-                return toReturn;
-            }
-            String potentialLink = markdown.substring(openParen + 1, closeParen);
-            if(potentialLink.indexOf(" ") == -1 && potentialLink.indexOf("\n") == -1) {
-                toReturn.add(potentialLink);
-                currentIndex = closeParen + 1;
-            }
+            // Ensures that if there is a [, it is followed by ] and if there is a (, it is followed by )
+            if (markdown.indexOf("(") == -1 && markdown.indexOf(")") != -1 ||
+                markdown.indexOf(")") == -1 && markdown.indexOf("(") != -1 ||
+                markdown.indexOf("[") == -1 && markdown.indexOf("]") != -1 ||
+                markdown.indexOf("]") == -1 && markdown.indexOf("[") != -1) {
+                    break;
+                }
             else {
-                currentIndex = currentIndex + 1;
+                if (markdown.indexOf("(") < markdown.indexOf("[") && markdown.indexOf("(") != -1) {
+                    int openParen = markdown.indexOf("(", currentIndex);
+                    int closeParen = markdown.indexOf(")", openParen);
+                    toReturn.add(markdown.substring(openParen + 1, closeParen));
+                    int nextOpenBracket = markdown.indexOf("[", closeParen);
+                    int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
+                    currentIndex = nextCloseBracket + 1;
+                }
+                else {
+                    int nextOpenBracket = markdown.indexOf("[", currentIndex);
+                    int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
+                    if (markdown.indexOf("(") != -1 || markdown.indexOf(")") != -1) {
+                        int openParen = markdown.indexOf("(", nextCloseBracket);
+                        int closeParen = markdown.indexOf(")", openParen);
+                        toReturn.add(markdown.substring(openParen + 1, closeParen));
+                        currentIndex = closeParen + 1;
+                    }
+                    else {
+                        currentIndex = nextCloseBracket + 1;
+                    }
+                }
             }
+            // Checks if ( comes before 
         }
         return toReturn;
     }
