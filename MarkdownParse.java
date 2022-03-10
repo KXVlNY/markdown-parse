@@ -1,44 +1,38 @@
-
 // File reading code from https://howtodoinjava.com/java/io/java-read-file-to-string-examples/
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 public class MarkdownParse {
     public static ArrayList<String> getLinks(String markdown) {
-        ArrayList<String> links = new ArrayList<String>();
-        final String regex = "(?<!!)(?<!`)\\[(?>[[a-zA-Z0-9 ]&&[^\\n]])+\\]\\((\\S+)\\)";
-
-        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-        final Matcher matcher = pattern.matcher(markdown);
-
-        while (matcher.find()) {
-            for (int i = 1; i <= matcher.groupCount(); i++) {
-                links.add(matcher.group(i));
+        ArrayList<String> toReturn = new ArrayList<>();
+        // find the next [, then find the ], then find the (, then take up to
+        // the next )
+        //System.out.println("markdown.length" + markdown.length());
+        int currentIndex = 0;
+        while(currentIndex < markdown.length()) {
+            int nextOpenBracket = markdown.indexOf("[", currentIndex);
+            if(nextOpenBracket == -1){
+                return toReturn;
             }
+            int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
+            int openParen = markdown.indexOf("(", nextCloseBracket);
+            int closeParen = markdown.indexOf(")", openParen);
+            if(nextCloseBracket ==-1 || closeParen == -1 || openParen == -1){
+                return toReturn;
+            }
+            toReturn.add(markdown.substring(openParen + 1, closeParen));
+            
+            currentIndex = closeParen + 1;
         }
-
-        return links;
+        return toReturn;
     }
-
-
-    public static String getContentFromFile(String filePath) throws Exception {
-        Path fileName = Path.of(filePath);
-        String contents = Files.readString(fileName);
-        return contents;
-    }
-
     public static void main(String[] args) throws IOException {
-        try {
-            String contents = getContentFromFile("snippet1.md");
-            ArrayList<String> links = getLinks(contents);
-            System.out.println(links);
-        } catch (Exception ex) {
-
-        }
-
+		Path fileName = Path.of(args[0]);
+	    String contents = Files.readString(fileName);
+        ArrayList<String> links = getLinks(contents);
+        System.out.println(links);
     }
 }
